@@ -10,7 +10,10 @@ include("query.jl")
 include("exporter_type.jl")
 include("api_client.jl")
 
-export ExporterType,
+export Query,
+    Series,
+    Target,
+    ExporterType,
     promlabelstr
 
 end # module

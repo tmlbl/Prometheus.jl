@@ -59,12 +59,20 @@ Execute a Prometheus query over a time range
 
 GET /api/v1/query_range
 """
-function range(query::String, start_t::DateTime, end_t::DateTime, step::String)
+function range(query::String, start_t::DateTime, end_t::DateTime, step::String)::Array{MatrixResult}
     qs = qstring("query" => query, "start" => start_t, "end" => end_t, "step" => step)
     path = "/api/v1/query_range" * "?" * qs
-    println(path) 
-    data = get(path)
-    return data
+    result = get(path)["data"]["result"]
+    ret = Vector{MatrixResult}()
+    for r in result
+        metric = r["metric"]
+        values = Vector{MatrixResultValue}()
+        for v in r["values"]
+            push!(values, MatrixResultValue(v[1], v[2]))
+        end
+        push!(ret, MatrixResult(metric, values))
+    end
+    return ret
 end
 
 range(q::Query, s::DateTime, e::DateTime, step::String) = range(string(q), s, e, step)
