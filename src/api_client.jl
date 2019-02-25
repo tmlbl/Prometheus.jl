@@ -58,6 +58,10 @@ end
 Execute a Prometheus query over a time range
 
 GET /api/v1/query_range
+
+
+    query = Query(:node_cpu_seconds_total, :job => "node_exporter")
+    result = Prometheus.range(query, Dates.now(UTC) - Hour(12))
 """
 function range(query::String, start_t::DateTime, end_t::DateTime, step::String)::Array{MatrixResult}
     qs = qstring("query" => query, "start" => start_t, "end" => end_t, "step" => step)
