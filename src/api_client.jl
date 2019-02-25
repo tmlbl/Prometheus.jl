@@ -86,5 +86,5 @@ function range(query::String, start_t::DateTime, end_t::DateTime, step::String):
 end
 
 range(q::Query, s::DateTime, e::DateTime, step::String) = range(string(q), s, e, step)
-range(q::Query, t::DateTime, s::String) = range(q, t, Dates.now(), s)
+range(q::Query, t::DateTime, s::String) = range(q, t, Dates.now(UTC), s)
 range(q::Query, t::DateTime) = range(q, t, "1m")
