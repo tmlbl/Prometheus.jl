@@ -1,3 +1,5 @@
+import Base.show
+
 struct Target
     job::String
     scrapeUrl::String
@@ -10,12 +12,11 @@ struct Series
     instance::String
 end
 
-struct MatrixResultValue
-    time::Int64
-    value::String
-end
-
 struct MatrixResult
     metric::Dict{String,String}
-    values::Array{MatrixResultValue}
+    values::TimeArray{String}
+end
+
+function Base.show(io::IO, r::MatrixResult)
+    print(io, "MatrixResult($(r.metric["__name__"])$(promlabelstr(r.metric)), $(length(r.values)))")
 end

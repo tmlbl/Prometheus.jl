@@ -65,12 +65,22 @@ function range(query::String, start_t::DateTime, end_t::DateTime, step::String):
     result = get(path)["data"]["result"]
     ret = Vector{MatrixResult}()
     for r in result
-        metric = r["metric"]
-        values = Vector{MatrixResultValue}()
-        for v in r["values"]
-            push!(values, MatrixResultValue(v[1], v[2]))
+        # Convert to a TimeArray
+        meta = r["metric"]
+        n = length(r["values"])
+        timestamps = Vector{DateTime}(undef, n)
+        values = Vector{String}(undef, n)
+        colnames = Vector{Symbol}()
+        push!(colnames, Symbol(meta["__name__"]))
+
+        for i = 1:n
+            v = r["values"][i]
+            timestamps[i] = unix2datetime(v[1])
+            values[i] = v[2]
         end
-        push!(ret, MatrixResult(metric, values))
+
+        ta = TimeArray(timestamps, values, colnames, meta)
+        push!(ret, MatrixResult(meta, ta))
     end
     return ret
 end

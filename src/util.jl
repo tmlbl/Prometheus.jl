@@ -3,13 +3,17 @@ Encode pairs into Prometheus query selectors
 
     promlabelstr("job" => "prometheus") # "{job="prometheus"}
 """
-function promlabelstr(ps::Pair...)::String
+function promlabelstr(d::Dict)::String
     ss = Vector{String}()
-    for (k, v) in Dict(ps)
-        push!(ss, "$k=\"$v\"")
+    for (k, v) in d
+        if k != "__name__"
+            push!(ss, "$k=\"$v\"")
+        end
     end
     return "{$(join(ss, ','))}"
 end
+
+promlabelstr(ps::Pair...) = promlabelstr(Dict(ps))
 
 function unix2str(t::Number)::String
     return string(convert(BigInt, trunc(t)))
