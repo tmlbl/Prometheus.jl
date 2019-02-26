@@ -14,7 +14,7 @@ end
 
 struct MatrixResult
     metric::Dict{String,String}
-    values::TimeArray{String}
+    values::TimeArray{Float64}
 end
 
 function Base.show(io::IO, r::MatrixResult)

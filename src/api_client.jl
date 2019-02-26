@@ -73,14 +73,14 @@ function range(query::String, start_t::DateTime, end_t::DateTime, step::String):
         meta = r["metric"]
         n = length(r["values"])
         timestamps = Vector{DateTime}(undef, n)
-        values = Vector{String}(undef, n)
+        values = Vector{Float64}(undef, n)
         colnames = Vector{Symbol}()
         push!(colnames, Symbol(meta["__name__"]))
 
         for i = 1:n
             v = r["values"][i]
             timestamps[i] = unix2datetime(v[1])
-            values[i] = v[2]
+            values[i] = parse(Float64, v[2])
         end
 
         ta = TimeArray(timestamps, values, colnames, meta)
